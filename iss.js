@@ -1,4 +1,5 @@
 const request = require('request');
+
 /**
  * Makes a single API request to retrieve the user's IP address.
  * Input:
@@ -13,12 +14,30 @@ const fetchMyIP = (callback) => {
     if (error) return callback(error, null);
     
     if (response.statusCode !== 200) {
-      callback(Error(`Status Code ${response.statusCode} when fetching IP: ${data}`), null);
+      callback(`Status Code ${response.statusCode} when fetching IP: ${data}`, null);
       return;
     }
     const ip = JSON.parse(data).ip;
+    // console.log('IP within fetchMyIP:', ip); // for troubleshooting
     callback(null, ip);
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = (ip, callback) => {
+  request(`https://freegeoip.app/json/${ip}`, (error, response, data) => {
+    if (error) return callback(error, null);
+
+    if (response.statusCode !== 200) {
+      callback(`Status Code ${response.statusCode} when fetching geolocation: ${data}`, null);
+      return;
+    }
+
+    const coords = {
+      latitude: JSON.parse(data).latitude,
+      longitude: JSON.parse(data).longitude
+    };
+    callback(coords);
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
