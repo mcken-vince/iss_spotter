@@ -54,7 +54,7 @@ const fetchISSFlyOverTimes = (coords, callback) => {
     if (response.statusCode !== 200) {
       callback(`Status Code ${response.statusCode} when fetching ISS fly over times: ${data}`);
     }
-    callback(null, data)
+    callback(null, data);
   });
 };
 
